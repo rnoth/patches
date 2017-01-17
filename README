@@ -1,0 +1,16 @@
+some patches for things. mostly suckless
+
+dmenu:
+	nograb.diff:
+	 - use XSelctInput(3) instead of XGrabKeyboard(3)
+	 - means you can use wm-keybinds with a dmenu open
+	scroll.diff
+	 - scroll long text within dmenu
+	 - means you can type long text in a dmenu without (much) pain
+	 - particularly useful for ../iiscripts/iimenu.sh
+	config.h
+	 - boring configuration details
+tabbed:
+	lazyfocus:
+	 - doesn't actually work (wip)
+	 - will allow you to open new windows without focusing them immediately

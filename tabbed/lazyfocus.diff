@@ -1,0 +1,85 @@
+diff --git a/tabbed.1 b/tabbed.1
+index bc28b8c..c2e4a4c 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -6,6 +6,7 @@ tabbed \- generic tabbed interface
+ .RB [ \-c ]
+ .RB [ \-d ]
+ .RB [ \-k ]
++.RB [ \-l ]
+ .RB [ \-s ]
+ .RB [ \-v ]
+ .RB [ \-g
+@@ -44,6 +45,8 @@ close tabbed when the last tab is closed. Mutually exclusive with -f.
+ .B \-d
+ detaches tabbed from the terminal and prints its XID to stdout.
+ .TP
++.B \-e
++focus new clients as they are added. Mutully exclusive with -l
+ .B \-f
+ fill up tabbed again by spawning the provided command, when the last tab is
+ closed. Mutually exclusive with -c.
+@@ -61,6 +64,9 @@ for further details.
+ close foreground tabbed client (instead of tabbed and all clients) when
+ WM_DELETE_WINDOW is sent.
+ .TP
++.B \-l
++keep focus on current window as new clients are added. Mutually exclusive with -e
++.TP
+ .BI \-n " name"
+ will set the WM_CLASS attribute to
+ .I name.
+diff --git a/tabbed.c b/tabbed.c
+index 9a44795..42e62e4 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -755,12 +755,14 @@ manage(Window w)
+ 		XSync(dpy, False);
+ 
+ 		/* Adjust sel before focus does set it to lastsel. */
+-		if (sel >= nextpos)
+-			sel++;
+-		focus(nextfocus ? nextpos :
+-		      sel < 0 ? 0 :
+-		      sel);
+-		nextfocus = foreground;
++		if (focusnew || nclients == 1) {
++			if (sel >= nextpos)
++				sel++;
++			focus(nextfocus ? nextpos :
++			      sel < 0 ? 0 :
++			      sel);
++			nextfocus = foreground;
++		}
+ 	}
+ }
+ 
+@@ -1253,7 +1255,7 @@ xsettitle(Window w, const char *str)
+ void
+ usage(void)
+ {
+-	die("usage: %s [-dfksv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
++	die("usage: %s [-defklsv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
+ 	    "       [-r narg] [-o color] [-O color] [-t color] [-T color]\n"
+ 	    "       [-u color] [-U color] command...\n", argv0);
+ }
+@@ -1273,6 +1275,9 @@ main(int argc, char *argv[])
+ 	case 'd':
+ 		detach = True;
+ 		break;
++	case 'e':
++		focusnew = True;
++		break;
+ 	case 'f':
+ 		fillagain = True;
+ 		break;
+@@ -1282,6 +1287,9 @@ main(int argc, char *argv[])
+ 	case 'k':
+ 		killclientsfirst = True;
+ 		break;
++	case 'l':
++		focusnew = False;
++		break;
+ 	case 'n':
+ 		wmname = EARGF(usage());
+ 		break;

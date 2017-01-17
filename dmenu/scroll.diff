@@ -1,0 +1,43 @@
+diff --git a/dmenu.c b/dmenu.c
+index d605ab4..c74bcc0 100644
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -128,7 +128,7 @@ drawitem(struct item *item, int x, int y, int w)
+ static void
+ drawmenu(void)
+ {
+-	unsigned int curpos;
++	unsigned int curpos, offset = 0, textwidth = TEXTW(text);
+ 	struct item *item;
+ 	int x = 0, y = 0, w;
+ 
+@@ -141,15 +141,26 @@ drawmenu(void)
+ 	}
+ 	/* draw input field */
+ 	w = (lines > 0 || !matches) ? mw - x : inputw;
++	if (textwidth >= w)
++		for (; offset < cursor - 1 && TEXTW(text + offset) > w - 2; ++offset)
++			;
++	if (offset && --offset)
++		drw_text(drw, x, 0, w, bh, lrpad / 2, "<", 0);
+ 	drw_setscheme(drw, scheme[SchemeNorm]);
+-	drw_text(drw, x, 0, w, bh, lrpad / 2, text, 0);
++	drw_text(drw, x, 0, w, bh, lrpad / 2, text + offset, 0);
+ 
+-	drw_font_getexts(drw->fonts, text, cursor, &curpos, NULL);
+-	if ((curpos += lrpad / 2 - 1) < w) {
++	drw_font_getexts(drw->fonts, text + offset, cursor, &curpos, NULL);
++	curpos += lrpad / 2 - 1;
++	if (textwidth < w) {
+ 		drw_setscheme(drw, scheme[SchemeNorm]);
+ 		drw_rect(drw, x + curpos, 2, 2, bh - 4, 1, 0);
+ 	}
+ 
++	if (textwidth >= w) {
++		drw_setscheme(drw, scheme[SchemeNorm]);
++		drw_rect(drw, x + lrpad / 2 + w - TEXTW(text + cursor), 2, 2, bh - 4, 1, 0);
++	}
++
+ 	if (lines > 0) {
+ 		/* draw vertical list */
+ 		for (item = curr; item != next; item = item->right)

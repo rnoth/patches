@@ -1,0 +1,43 @@
+diff --git a/dmenu.c b/dmenu.c
+index d605ab4..5e1036a 100644
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -521,6 +521,9 @@ run(void)
+ 			if (ev.xfocus.window != win)
+ 				grabfocus();
+ 			break;
++		case FocusOut:
++			XSetInputFocus (dpy, win, RevertToParent, CurrentTime);
++			break;
+ 		case KeyPress:
+ 			keypress(&ev.xkey);
+ 			break;
+@@ -631,6 +634,11 @@ setup(void)
+ 	}
+ 	drw_resize(drw, mw, mh);
+ 	drawmenu();
++
++	/* select for keypress events */
++	XSelectInput (dpy, win, KeyPressMask | VisibilityChangeMask 
++				| ExposureMask | FocusChangeMask);
++	XSetInputFocus (dpy, win, RevertToParent, CurrentTime);
+ }
+ 
+ static void
+@@ -699,13 +707,14 @@ main(int argc, char *argv[])
+ 		die("no fonts could be loaded.");
+ 	lrpad = drw->fonts->h;
+ 
+-	if (fast) {
++	/*if (fast) {
+ 		grabkeyboard();
+ 		readstdin();
+ 	} else {
+ 		readstdin();
+ 		grabkeyboard();
+-	}
++	}*/
++	readstdin();
+ 	setup();
+ 	run();
+ 
