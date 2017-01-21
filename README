@@ -12,5 +12,7 @@ dmenu:
 	 - boring configuration details
 tabbed:
 	lazyfocus:
-	 - doesn't actually work (wip)
-	 - will allow you to open new windows without focusing them immediately
+	 - open new windows without focusing them immediately
+surf:
+	fixtitle:
+	 - simple patch to reformat the title
