@@ -1,0 +1,25 @@
+--- surf.c.old	2017-01-20 19:18:57.113858273 -0800
++++ surf.c	2017-01-20 19:19:02.185858001 -0800
+@@ -1644,15 +1644,15 @@
+ 		getpagestat(c);
+ 
+ 		if (c->linkhover) {
+-			t = g_strdup_printf("%s:%s | %s", togglestat, pagestat,
+-			                    c->linkhover);
++			t = g_strdup_printf("%s (%s:%s)", c->linkhover, togglestat,
++					    pagestat);
+ 		} else if (c->progress != 100) {
+-			t = g_strdup_printf("[%i%%] %s:%s | %s", c->progress,
+-			                    togglestat, pagestat,
+-			                    c->title == NULL ? "" : c->title);
++			t = g_strdup_printf("[%i%%] %s | (%s:%s)", c->progress,
++			                    c->title == NULL ? "" : c->title,
++			                    togglestat, pagestat);
+ 		} else {
+-			t = g_strdup_printf("%s:%s | %s", togglestat, pagestat,
+-			                    c->title == NULL ? "" : c->title);
++			t = g_strdup_printf("%s (%s:%s)", c->title == NULL ? "" : c->title,
++					    togglestat, pagestat);
+ 		}
+ 
+ 		gtk_window_set_title(GTK_WINDOW(c->win), t);
