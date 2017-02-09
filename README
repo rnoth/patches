@@ -16,4 +16,8 @@ tabbed:
 	 - breaks Ctrl+Shift+Enter somewhat
 surf:
 	fixtitle:
-	 - simple patch to reformat the title
+	 - small patch to reformat the title
+ii:
+	usernames:
+	 - updated version of usernames.diff
+	 - updates your nick when you change it
