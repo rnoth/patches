@@ -15,7 +15,7 @@ index d605ab4..c74bcc0 100644
  	}
  	/* draw input field */
  	w = (lines > 0 || !matches) ? mw - x : inputw;
-+	if (textwidth >= w)
++	if (cursor && textwidth >= w)
 +		for (; offset < cursor - 1 && TEXTW(text + offset) > w - 2; ++offset)
 +			;
 +	if (offset && --offset)
